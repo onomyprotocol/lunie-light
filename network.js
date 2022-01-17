@@ -20,7 +20,7 @@ export default {
   validatorAddressPrefix: 'onomyvaloper',
   validatorConsensusaddressPrefix: 'onomyvalcons', // needed to map validators from staking queries to the validator set
   HDPath: `m/44'/118'/0'/0/0`,
-  lockUpPeriod: `3 days`,
+  lockUpPeriod: `21 days`,
   fees: {
     default: {
       gasEstimate: 350000,
