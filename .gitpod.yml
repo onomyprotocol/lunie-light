@@ -1,0 +1,14 @@
+
+tasks:
+  - init: yarn install
+    command: yarn dev
+vscode:
+  extensions:
+    - dbaeumer.vscode-eslint
+    - gruntfuggly.todo-tree
+github:
+  prebuilds:
+    branches: true
+    pullRequests: true
+    pullRequestsFromForks: true
+    addComment: true
