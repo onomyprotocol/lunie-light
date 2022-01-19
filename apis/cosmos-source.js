@@ -97,51 +97,51 @@ export default class CosmosAPI {
   }
 
   async getTransactions(address, pageNumber = 0) {
-    // // getting page count
-    // const [senderPage, recipientPage] = await Promise.all([
-    //   this.getPageCount(`/cosmos/tx/v1beta1/txs?message.sender=${address}`),
-    //   this.getPageCount(`/cosmos/tx/v1beta1/txs?transfer.recipient=${address}`),
-    // ])
+    // getting page count
+    const [senderPage, recipientPage] = await Promise.all([
+      this.getPageCount(`/cosmos/tx/v1beta1/txs?message.sender=${address}`),
+      this.getPageCount(`/cosmos/tx/v1beta1/txs?transfer.recipient=${address}`),
+    ])
 
-    // const requests = [
-    //   this.loadPaginatedTxs(
-    //     `/cosmos/tx/v1beta1/txs?message.sender=${address}`,
-    //     senderPage - pageNumber
-    //   ),
-    //   this.loadPaginatedTxs(
-    //     `/cosmos/tx/v1beta1/txs?transfer.recipient=${address}`,
-    //     recipientPage - pageNumber
-    //   ),
-    // ]
-    // /*
-    //   if it's a first requests we need to load two pages, instead of one,
-    //   cause last page could contain less records than any other (even 1)
-    //   To do this asynchronously we need to do it with Promise.all
-    //   and not wait until last page is loaded
-    // */
-    // if (!pageNumber) {
-    //   if (senderPage - pageNumber > 1) {
-    //     requests.push(
-    //       this.loadPaginatedTxs(
-    //         `/cosmos/tx/v1beta1/txs?message.sender=${address}`,
-    //         senderPage - pageNumber - 1
-    //       )
-    //     )
-    //   }
-    //   if (recipientPage - pageNumber > 1) {
-    //     requests.push(
-    //       this.loadPaginatedTxs(
-    //         `/cosmos/tx/v1beta1/txs?transfer.recipient=${address}`,
-    //         recipientPage - pageNumber - 1
-    //       )
-    //     )
-    //   }
-    // }
+    const requests = [
+      this.loadPaginatedTxs(
+        `/cosmos/tx/v1beta1/txs?message.sender=${address}`,
+        senderPage - pageNumber
+      ),
+      this.loadPaginatedTxs(
+        `/cosmos/tx/v1beta1/txs?transfer.recipient=${address}`,
+        recipientPage - pageNumber
+      ),
+    ]
+    /*
+      if it's a first requests we need to load two pages, instead of one,
+      cause last page could contain less records than any other (even 1)
+      To do this asynchronously we need to do it with Promise.all
+      and not wait until last page is loaded
+    */
+    if (!pageNumber) {
+      if (senderPage - pageNumber > 1) {
+        requests.push(
+          this.loadPaginatedTxs(
+            `/cosmos/tx/v1beta1/txs?message.sender=${address}`,
+            senderPage - pageNumber - 1
+          )
+        )
+      }
+      if (recipientPage - pageNumber > 1) {
+        requests.push(
+          this.loadPaginatedTxs(
+            `/cosmos/tx/v1beta1/txs?transfer.recipient=${address}`,
+            recipientPage - pageNumber - 1
+          )
+        )
+      }
+    }
 
-    // const txs = await Promise.all(requests).then(([...results]) =>
-    //   [].concat(...results)
-    // )
-    const txs = await this.axios.get(`https://api.cosmostation.io/v1/account/txs/${address}`)
+    const txs = await Promise.all(requests).then(([...results]) =>
+      [].concat(...results)
+    )
+    // const txs = await this.axios.get(`https://api.cosmostation.io/v1/account/txs/${address}`)
 
     return this.reducers.transactionsReducer(txs)
   }

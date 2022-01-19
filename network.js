@@ -13,6 +13,7 @@ export default {
       viewDenom: 'NOM',
       chainDenom: 'anom',
       chainToViewConversionFactor: 1e-18,
+      decimalPlaces: 18,
       icon: `currencies/muon.png`,
     },
   ],
